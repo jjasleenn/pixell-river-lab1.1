@@ -1,12 +1,16 @@
-import "./Header.css";
- 
+import { Link } from "react-router-dom";
+
 function Header() {
   return (
-    <header className="site-header">
-      <h1>Pixell River Employee Directory</h1>
-      <p>Welcome to the Pixell River Financial staff directory.</p>
+    <header>
+      <h1>Pixell River Financial</h1>
+
+      <nav>
+        <Link to="/employees">Employees</Link> |{" "}
+        <Link to="/organization">Organization</Link>
+      </nav>
     </header>
   );
 }
- 
-export default Header
+
+export default Header;
