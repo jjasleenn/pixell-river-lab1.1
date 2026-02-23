@@ -1,16 +1,17 @@
 import Department from "../components/Department";
-import EmployeeForm from "../components/AddEmployeeForm";
+import AddEmployeeForm from "../components/AddEmployeeForm";
 
-function Employees({ departments, addEmployee }: any) {
+function Employees({ departments, setDepartments }: any) {
+
   return (
     <>
       {departments.map((dept: any) => (
         <Department key={dept.name} department={dept} />
       ))}
 
-      <EmployeeForm
+      <AddEmployeeForm
         departments={departments}
-        onAddEmployee={addEmployee}
+        setDepartments={setDepartments}
       />
     </>
   );

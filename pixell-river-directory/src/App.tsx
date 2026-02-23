@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Header from "./components/Header";
@@ -10,9 +10,15 @@ import Organization from "./pages/Organization";
 import { employeeRepo } from "./repositories/employeeRepo";
 
 function App() {
+
   const [departments, setDepartments] = useState(
     employeeRepo.getDepartments()
   );
+
+
+  useEffect(() => {
+    setDepartments(employeeRepo.getDepartments());
+  }, []);
 
   return (
     <BrowserRouter>

@@ -1,15 +1,23 @@
 import { useFormInput } from "../hooks/useFormInput";
 import { employeeService } from "../services/employeeService";
 
-function EmployeeForm({ setDepartments }: any) {
+interface Department {
+  name: string;
+}
 
+interface EmployeeFormProps {
+  departments: Department[];
+  setDepartments: (departments: Department[]) => void;
+}
+
+function EmployeeForm({ departments, setDepartments }: EmployeeFormProps) {
   const firstName = useFormInput("");
   const department = useFormInput("");
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const result = employeeService.createEmployee(
+    const result = await employeeService.createEmployee(
       firstName.value,
       department.value
     );
@@ -19,18 +27,18 @@ function EmployeeForm({ setDepartments }: any) {
       return;
     }
 
-    setDepartments(result.data);
+    setDepartments(result.data || []);
     firstName.setValue("");
     department.setValue("");
   };
 
   return (
     <form onSubmit={handleSubmit}>
-
-      {firstName.error && <p>{firstName.error}</p>}
+      {firstName.error && <p style={{ color: "red" }}>{firstName.error}</p>}
 
       <input
         type="text"
+        placeholder="First Name"
         value={firstName.value}
         onChange={firstName.onChange}
       />
@@ -40,6 +48,11 @@ function EmployeeForm({ setDepartments }: any) {
         onChange={department.onChange}
       >
         <option value="">Select Department</option>
+        {departments.map((dept) => (
+          <option key={dept.name} value={dept.name}>
+            {dept.name}
+          </option>
+        ))}
       </select>
 
       <button type="submit">Add Employee</button>
