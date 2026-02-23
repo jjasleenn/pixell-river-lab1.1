@@ -10,7 +10,7 @@ import Organization from "./pages/Organization";
 import { departments as initialDepartments } from "./Data/Employees";
 
 function App() {
-  const [departments, setDepartments] = useState(initialDepartments);
+  const [departments, setDepartments] = useState(initialDepartments,);
 
   const addEmployee = (firstName: string, departmentName: string) => {
     setDepartments(prev =>
