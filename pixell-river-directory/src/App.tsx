@@ -7,23 +7,12 @@ import Footer from "./components/Footer";
 import Employees from "./pages/Employee";
 import Organization from "./pages/Organization";
 
-import { departments as initialDepartments } from "./Data/Employees";
+import { employeeRepo } from "./repositories/employeeRepo";
 
 function App() {
-  const [departments, setDepartments] = useState(initialDepartments,);
-
-  const addEmployee = (firstName: string, departmentName: string) => {
-    setDepartments(prev =>
-      prev.map(dept =>
-        dept.name === departmentName
-          ? {
-              ...dept,
-              employees: [...dept.employees, { firstName }]
-            }
-          : dept
-      )
-    );
-  };
+  const [departments, setDepartments] = useState(
+    employeeRepo.getDepartments()
+  );
 
   return (
     <BrowserRouter>
@@ -35,7 +24,7 @@ function App() {
           element={
             <Employees
               departments={departments}
-              addEmployee={addEmployee}
+              setDepartments={setDepartments}
             />
           }
         />
