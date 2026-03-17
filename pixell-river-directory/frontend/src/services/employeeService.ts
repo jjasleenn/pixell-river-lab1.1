@@ -1,4 +1,4 @@
-import { employeeRepo } from "../repositories/employeeRepo";
+import { employeeRepo } from "../src/repositories/employeeRepo";
 
 export const employeeService = {
 

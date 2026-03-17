@@ -4,6 +4,11 @@ let organization = [...initialOrganization];
 
 export const organizationRepo = {
 
+  async getOrganization() {
+    const response = await fetch("http://localhost:5000/employees");
+    return await response.json();
+  },
+  
   getRoles() {
     return organization;
   },

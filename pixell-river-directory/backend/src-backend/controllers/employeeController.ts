@@ -1,18 +1,23 @@
 import { Request, Response } from "express";
-import { employeeService } from "../services/employeeService";
 
 export const getDepartments = (req: Request, res: Response) => {
-
-  const data = employeeService.getDepartments();
-
-  res.json(data);
+  res.json([
+    {
+      name: "HR",
+      employees: [
+        { firstName: "John", lastName: "Doe" },
+        { firstName: "Jane", lastName: "Smith" }
+      ]
+    },
+    {
+      name: "IT",
+      employees: [
+        { firstName: "Mike", lastName: "Brown" }
+      ]
+    }
+  ]);
 };
 
 export const createEmployee = (req: Request, res: Response) => {
-
-  const { firstName, department } = req.body;
-
-  const result = employeeService.createEmployee(firstName, department);
-
-  res.json(result);
+  res.json({ message: "Employee created" });
 };

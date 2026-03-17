@@ -10,14 +10,15 @@ import Organization from "./pages/Organization";
 import { employeeRepo } from "./repositories/employeeRepo";
 
 function App() {
-
-  const [departments, setDepartments] = useState(
-    employeeRepo.getDepartments()
-  );
-
+  const [departments, setDepartments] = useState<any[]>([]);
 
   useEffect(() => {
-    setDepartments(employeeRepo.getDepartments());
+    employeeRepo.getDepartments()
+      .then((data) => {
+        console.log("DATA:", data);
+        setDepartments(data);
+      })
+      .catch((err) => console.error(err));
   }, []);
 
   return (

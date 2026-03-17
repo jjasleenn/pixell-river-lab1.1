@@ -1,4 +1,4 @@
-import { organizationRepo } from "../repositories/organizationRepo";
+import { organizationRepo } from "../src/repositories/organizationRepo";
 
 export const organizationService = {
 
