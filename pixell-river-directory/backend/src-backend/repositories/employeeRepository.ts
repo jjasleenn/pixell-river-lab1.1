@@ -1,19 +1,36 @@
-import { departments } from "../data/employees";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 export const employeeRepository = {
 
-  getDepartments() {
-    return departments;
+  async getDepartments() {
+    return await prisma.department.findMany({
+      include: {
+        employees: true
+      }
+    });
   },
 
-  createEmployee(firstName: string, department: string) {
+  async createEmployee(
+    firstName: string,
+    lastName: string,
+    departmentId: number
+  ) {
 
-    const dept = departments.find(d => d.name === department);
+    // check if department exists
+    const dept = await prisma.department.findUnique({
+      where: { id: departmentId }
+    });
 
     if (!dept) return null;
 
-    dept.employees.push({ firstName });
-
-    return departments;
+    return await prisma.employee.create({
+      data: {
+        firstName,
+        lastName,
+        departmentId
+      }
+    });
   }
 };

@@ -1,8 +1,8 @@
-import { employeeRepo } from "../src/repositories/employeeRepo";
+import { employeeRepo } from "../repositories/employeeRepo";
 
 export const employeeService = {
 
-  createEmployee(firstName: string, departmentName: string) {
+  async createEmployee(firstName: string, departmentName: string) {
 
     if (firstName.trim().length < 3) {
       return {
@@ -12,10 +12,10 @@ export const employeeService = {
       };
     }
 
-    const departments = employeeRepo.getDepartments();
+    const departments = await employeeRepo.getDepartments();
 
     const exists = departments.some(
-      dept => dept.name === departmentName
+      (dept: any) => dept.name === departmentName
     );
 
     if (!exists) {
@@ -25,14 +25,14 @@ export const employeeService = {
         data: null
       };
     }
-
+    
     const updatedDepartments =
-      employeeRepo.createEmployee(firstName, departmentName);
+      await employeeRepo.createEmployee(firstName, departmentName);
 
     return {
       success: true,
       message: "",
       data: updatedDepartments
     };
-  }
+  }    
 };
