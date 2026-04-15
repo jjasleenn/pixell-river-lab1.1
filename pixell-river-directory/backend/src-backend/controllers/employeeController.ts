@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { getAuth } from "@clerk/express";
 import { employeeRepository } from "../repositories/employeeRepository";
 
 export const getDepartments = async (req: Request, res: Response) => {
@@ -12,15 +13,25 @@ export const getDepartments = async (req: Request, res: Response) => {
 
 export const createEmployee = async (req: Request, res: Response) => {
   try {
+   
+    const { userId } = getAuth(req);
+
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
     const { firstName, lastName, departmentId } = req.body;
 
-    // validation
     if (!firstName || firstName.length < 3) {
-      return res.status(400).json({ message: "First name must be at least 3 characters" });
+      return res.status(400).json({
+        message: "First name must be at least 3 characters",
+      });
     }
 
     if (!departmentId) {
-      return res.status(400).json({ message: "Department ID is required" });
+      return res.status(400).json({
+        message: "Department ID is required",
+      });
     }
 
     const result = await employeeRepository.createEmployee(
@@ -30,7 +41,9 @@ export const createEmployee = async (req: Request, res: Response) => {
     );
 
     if (!result) {
-      return res.status(400).json({ message: "Invalid department" });
+      return res.status(400).json({
+        message: "Invalid department",
+      });
     }
 
     res.json(result);
