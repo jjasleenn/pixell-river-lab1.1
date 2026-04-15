@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@clerk/clerk-react": "^5.61.4",
+    "@clerk/react": "^6.4.1",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "react": "^19.2.0",

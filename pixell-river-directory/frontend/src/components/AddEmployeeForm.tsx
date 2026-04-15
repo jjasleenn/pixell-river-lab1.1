@@ -1,3 +1,4 @@
+import { SignedIn, SignedOut, SignInButton } from "@clerk/clerk-react";
 import { useFormInput } from "../hooks/useFormInput";
 import { employeeService } from "../services/employeeService";
 
@@ -33,30 +34,42 @@ function EmployeeForm({ departments, setDepartments }: EmployeeFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      {firstName.error && <p style={{ color: "red" }}>{firstName.error}</p>}
+    <>
+      <SignedOut>
+        <p>You must login to add employees</p>
+        <SignInButton />
+      </SignedOut>
 
-      <input
-        type="text"
-        placeholder="First Name"
-        value={firstName.value}
-        onChange={firstName.onChange}
-      />
+      
+      <SignedIn>
+        <form onSubmit={handleSubmit}>
+          {firstName.error && (
+            <p style={{ color: "red" }}>{firstName.error}</p>
+          )}
 
-      <select
-        value={department.value}
-        onChange={department.onChange}
-      >
-        <option value="">Select Department</option>
-        {departments.map((dept) => (
-          <option key={dept.name} value={dept.name}>
-            {dept.name}
-          </option>
-        ))}
-      </select>
+          <input
+            type="text"
+            placeholder="First Name"
+            value={firstName.value}
+            onChange={firstName.onChange}
+          />
 
-      <button type="submit">Add Employee</button>
-    </form>
+          <select
+            value={department.value}
+            onChange={department.onChange}
+          >
+            <option value="">Select Department</option>
+            {departments.map((dept) => (
+              <option key={dept.name} value={dept.name}>
+                {dept.name}
+              </option>
+            ))}
+          </select>
+
+          <button type="submit">Add Employee</button>
+        </form>
+      </SignedIn>
+    </>
   );
 }
 
