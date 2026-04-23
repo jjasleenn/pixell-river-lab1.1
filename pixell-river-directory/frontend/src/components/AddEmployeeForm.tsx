@@ -1,36 +1,52 @@
-import { SignedIn, SignedOut, SignInButton } from "@clerk/clerk-react";
+import { SignedIn, SignedOut, SignInButton, useAuth } from "@clerk/clerk-react";
 import { useFormInput } from "../hooks/useFormInput";
-import { employeeService } from "../services/employeeService";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-interface Department {
-  name: string;
-}
-
-interface EmployeeFormProps {
-  departments: Department[];
-  setDepartments: (departments: Department[]) => void;
-}
-
-function EmployeeForm({ departments, setDepartments }: EmployeeFormProps) {
+function AddEmployeeForm({ departments }: any) {
   const firstName = useFormInput("");
   const department = useFormInput("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const { getToken } = useAuth();
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: async () => {
+      const token = await getToken();
+
+      if (!token) throw new Error("No auth token"); 
+
+      const res = await fetch("http://localhost:3000/employees", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          firstName: firstName.value,
+          lastName: "",
+          departmentId: Number(department.value),
+        }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || "Failed to create employee");
+      }
+
+      return res.json();
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["organization"] });
+
+      firstName.setValue("");
+      department.setValue("");
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    const result = await employeeService.createEmployee(
-      firstName.value,
-      department.value
-    );
-
-    if (!result.success) {
-      firstName.validate(() => result.message);
-      return;
-    }
-
-    setDepartments(result.data || []);
-    firstName.setValue("");
-    department.setValue("");
+    mutation.mutate();
   };
 
   return (
@@ -40,11 +56,12 @@ function EmployeeForm({ departments, setDepartments }: EmployeeFormProps) {
         <SignInButton />
       </SignedOut>
 
-      
       <SignedIn>
         <form onSubmit={handleSubmit}>
-          {firstName.error && (
-            <p style={{ color: "red" }}>{firstName.error}</p>
+          {mutation.isError && (
+            <p style={{ color: "red" }}>
+              {(mutation.error as Error).message}
+            </p>
           )}
 
           <input
@@ -54,23 +71,22 @@ function EmployeeForm({ departments, setDepartments }: EmployeeFormProps) {
             onChange={firstName.onChange}
           />
 
-          <select
-            value={department.value}
-            onChange={department.onChange}
-          >
+          <select value={department.value} onChange={department.onChange}>
             <option value="">Select Department</option>
-            {departments.map((dept) => (
-              <option key={dept.name} value={dept.name}>
+            {departments.map((dept: any) => (
+              <option key={dept.id} value={dept.id}>
                 {dept.name}
               </option>
             ))}
           </select>
 
-          <button type="submit">Add Employee</button>
+          <button type="submit">
+            {mutation.isPending ? "Adding..." : "Add Employee"}
+          </button>
         </form>
       </SignedIn>
     </>
   );
 }
 
-export default EmployeeForm;
+export default AddEmployeeForm;

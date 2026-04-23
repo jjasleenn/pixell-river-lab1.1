@@ -28,12 +28,7 @@ function App() {
       <Routes>
         <Route
           path="/employees"
-          element={
-            <Employees
-              departments={departments}
-              setDepartments={setDepartments}
-            />
-          }
+          element={<Employees />}
         />
 
         <Route

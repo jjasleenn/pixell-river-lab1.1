@@ -1,29 +1,35 @@
-import { useEffect, useState } from "react";
-import { employeeRepo } from "../repositories/employeeRepo";
+import { useQuery } from "@tanstack/react-query";
+
+const fetchDepartments = async () => {
+  const res = await fetch("http://localhost:3000/employees");
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch");
+  }
+
+  return res.json();
+};
 
 function Organization() {
-  const [departments, setDepartments] = useState<any[]>([]);
+  const { data = [], isLoading, error } = useQuery({
+    queryKey: ["organization"],
+    queryFn: fetchDepartments,
+  });
 
-  useEffect(() => {
-    employeeRepo.getDepartments()
-      .then((data) => {
-        console.log("ORG DATA:", data);
-        setDepartments(data);
-      })
-      .catch((err) => console.error(err));
-  }, []);
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Error loading data</p>;
 
   return (
     <div>
       <h1>Departments</h1>
 
-      {Array.isArray(departments) && departments.length > 0 ? (
-        departments.map((dept, index) => (
-          <div key={index}>
+      {data.length > 0 ? (
+        data.map((dept: any) => (
+          <div key={dept.id}>
             <h2>{dept.name}</h2>
 
-            {dept.employees?.map((emp: any, i: number) => (
-              <p key={i}>{emp.firstName}</p>
+            {dept.employees?.map((emp: any) => (
+              <p key={emp.id}>{emp.firstName}</p>
             ))}
           </div>
         ))

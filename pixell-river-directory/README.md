@@ -73,3 +73,12 @@ export default defineConfig([
   },
 ])
 ```
+## Lab 5.2 – Data Fetching with TanStack Query
+
+In this lab, I improved how my application manages data by integrating TanStack Query. Previously, the application used useEffect and manual fetch calls to retrieve data from the backend. This approach required additional logic to manage loading states, errors, and refreshing data after updates.
+
+I used the TanStack Query library to handle data fetching, caching, and synchronization with the server. This tool simplifies API calls and automatically manages loading and error states while caching results for better performance.
+
+This change improves user experience by making the application faster and more responsive. Data is cached and reused instead of being fetched repeatedly, and updates (such as adding employees) automatically refresh the displayed data without requiring a page reload.
+
+This enhancement helped me better understand how modern applications manage server state. Instead of manually controlling data flow, I now rely on a structured library that separates server state from UI logic, making the application more scalable and maintainable.
